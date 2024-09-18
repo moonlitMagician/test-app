@@ -1,37 +1,27 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React from 'react';
+import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
+import styles from './styles.js'; // Ensure this imports correctly
+import shakelist from './shakes.json';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function Index() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <ScrollView>
+      <Text style={styles.textMainHeader}>List of shakes:</Text>
+      {shakelist.map(shake => (
+        <View style={styles.shakeDisplaybox} key={shake.name}>
+          <Image
+            source={{ uri: shake.image }} // For remote images
+            style={styles.shakeImage}
+          />
+          <Text style={styles.textHeader}>{shake.name}</Text>
+          <Text>Ingredients: {shake.ingredients}</Text>
+          <Text>Calories: {shake.calories}</Text>
+          <Text>Protein: {shake.protein}</Text>
+          <Text>Carbs: {shake.carbs}</Text>
+          <Text>Fats: {shake.fat}</Text>
+          <button style={styles.button}>Add to cart</button>
+        </View>
+      ))}
+    </ScrollView>
   );
 }
